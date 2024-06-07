@@ -6,7 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/bottlerocket-os/bottlerocket-test-system/compare/v0.0.11...develop
+[Unreleased]: https://github.com/bottlerocket-os/bottlerocket-test-system/compare/v0.0.13...develop
+
+## [0.0.13] - 2024-06-06
+
+### Added
+
+- cluster: add function to download eks-a bundle file ([#895])
+- vmware: add bundles-override argument to eks-a ([#895])
+- metal: add bundles-override argument to eks-a ([#895])
+
+### Changed
+
+- update karpenter agent version to 0.36.1 ([#898])
+
+[#895]: https://github.com/bottlerocket-os/bottlerocket-test-system/pull/895
+[#898]: https://github.com/bottlerocket-os/bottlerocket-test-system/pull/898
+
+[0.0.13]: https://github.com/bottlerocket-os/bottlerocket-test-system/tree/v0.0.13
 
 ## [0.0.12] - 2024-03-18
 
