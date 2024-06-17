@@ -82,7 +82,7 @@ where
         .args(k8s_image_arg)
         .args(e2e_repo_arg)
         .args(sonobuoy_image_arg)
-        .arg("--plugin-env=e2e.E2E_EXTRA_ARGS=--non-blocking-taints=sonobuoy,node-role.kubernetes.io/control-plane,node-role.kubernetes.io/master")
+        .arg("--plugin-env=e2e.E2E_EXTRA_ARGS=--non-blocking-taints=sonobuoy,node-role.kubernetes.io/control-plane,node-role.kubernetes.io/master --progress-report-url=http://localhost:8099/progress")
         .status()
         .context(error::SonobuoyProcessSnafu)?;
 
