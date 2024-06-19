@@ -103,7 +103,7 @@ impl Create for EcsCreator {
             .context(Resources::Clear, "Error sending cluster creation message")?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
 
         info!("Creating AWS config");
         memo.current_status = "Creating AWS config".to_string();

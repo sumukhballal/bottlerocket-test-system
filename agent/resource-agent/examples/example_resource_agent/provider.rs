@@ -134,7 +134,7 @@ impl Create for RobotCreator {
         for id in 0..spec.configuration.number_of_robots.get() {
             let memo_text = format!("creating robot {}", id);
             debug!("{}", memo_text);
-            memo.current_status = memo_text.clone();
+            memo.current_status.clone_from(&memo_text);
             memo.existing_robot_ids.insert(id.into());
 
             // We record the robot ID before we actually create it in case something goes wrong.
@@ -206,7 +206,7 @@ impl Destroy for RobotDestroyer {
 
         // Create a set of IDs to iterate over and destroy. Also ensure that the memo's IDs match.
         let ids = if let Some(resource) = resource {
-            memo.existing_robot_ids = resource.ids.clone();
+            memo.existing_robot_ids.clone_from(&resource.ids);
             resource.ids
         } else {
             memo.clone().existing_robot_ids
@@ -214,7 +214,7 @@ impl Destroy for RobotDestroyer {
 
         for id in ids {
             let memo_text = format!("destroying robot {}", id);
-            memo.current_status = memo_text.clone();
+            memo.current_status.clone_from(&memo_text);
             memo.existing_robot_ids.remove(&id);
             client.send_info(memo.clone()).await.map_err(|e| {
                 ProviderError::new_with_source_and_context(

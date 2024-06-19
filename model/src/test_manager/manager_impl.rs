@@ -192,7 +192,7 @@ impl TestManager {
             .context(error::NotFoundSnafu {
                 what: "pod for test",
             })
-            .map(|pod| pod.clone())
+            .cloned()
     }
 
     /// Get a pod for a testsys resource.
@@ -220,7 +220,7 @@ impl TestManager {
                     .context(error::NotFoundSnafu {
                         what: "pod for test",
                     })
-                    .map(|pod| pod.clone());
+                    .cloned();
             }
             // if the resource does not exist, return an error
             Err(_) => Err(error::Error::NotFound {
@@ -246,6 +246,6 @@ impl TestManager {
             .context(error::NotFoundSnafu {
                 what: "controller pod for test",
             })
-            .map(|pod| pod.clone())
+            .cloned()
     }
 }

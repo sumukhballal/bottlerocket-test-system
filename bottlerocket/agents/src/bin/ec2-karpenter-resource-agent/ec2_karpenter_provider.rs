@@ -119,8 +119,9 @@ impl Create for Ec2KarpenterCreator {
             .context(resources, "Error sending cluster creation message")?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
-        memo.cluster_name = spec.configuration.cluster_name.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
+        memo.cluster_name
+            .clone_from(&spec.configuration.cluster_name);
 
         info!("Creating AWS config");
         memo.current_status = "Creating AWS config".to_string();
@@ -520,7 +521,7 @@ impl Create for Ec2KarpenterCreator {
 kind: NodePool
 metadata:
     name: default
-spec: 
+spec:
   template:
     spec:
         nodeClassRef:
@@ -541,7 +542,7 @@ metadata:
 spec:
     amiFamily: Bottlerocket
     role: "KarpenterNodeRole-{}"
-    amiSelectorTerms: 
+    amiSelectorTerms:
       - id: {}
     subnetSelectorTerms:
         - tags:
@@ -834,8 +835,9 @@ impl Destroy for Ec2KarpenterDestroyer {
             .context(resources, "Error sending cluster creation message")?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
-        memo.cluster_name = spec.configuration.cluster_name.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
+        memo.cluster_name
+            .clone_from(&spec.configuration.cluster_name);
 
         info!("Creating AWS config");
         memo.current_status = "Creating AWS config".to_string();

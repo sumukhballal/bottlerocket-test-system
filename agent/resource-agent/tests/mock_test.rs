@@ -11,8 +11,8 @@ use std::marker::PhantomData;
 #[tokio::test]
 async fn mock_test() {
     let types = Types {
-        info_client: PhantomData::<MockInfoClient>::default(),
-        agent_client: PhantomData::<MockAgentClient>::default(),
+        info_client: PhantomData::<MockInfoClient>,
+        agent_client: PhantomData::<MockAgentClient>,
     };
 
     let agent = Agent::new(
@@ -30,8 +30,8 @@ async fn mock_test() {
     agent.run().await.unwrap();
 
     let types = Types {
-        info_client: PhantomData::<MockInfoClient>::default(),
-        agent_client: PhantomData::<MockAgentClient>::default(),
+        info_client: PhantomData::<MockInfoClient>,
+        agent_client: PhantomData::<MockAgentClient>,
     };
 
     let agent = Agent::new(

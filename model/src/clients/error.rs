@@ -19,6 +19,7 @@ pub(crate) enum InnerError {
     #[snafu(display("An error occurred while resolving the config: {}", what))]
     ConfigResolution { what: String },
 
+    #[allow(dead_code)]
     #[snafu(display("Error serializing object '{}': {}", what, source))]
     Serde {
         what: String,

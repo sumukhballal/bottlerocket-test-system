@@ -322,7 +322,7 @@ async fn create_vsphere_k8s_cluster(
         ));
     }
     *resources = Resources::Remaining;
-    memo.vm_template = vm_template_name.to_owned();
+    vm_template_name.clone_into(&mut memo.vm_template);
 
     // EKS-A expects tags on the VM template
     let vm_full_path = format!(

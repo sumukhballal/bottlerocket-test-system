@@ -626,12 +626,12 @@ mod test {
 
     fn read_eks_file(filename: &str) -> String {
         let p = samples_dir().join("eks").join(filename);
-        read_to_string(&p).expect(&format!("unable to open '{}'", p.display()))
+        read_to_string(&p).unwrap_or_else(|_| panic!("unable to open '{}'", p.display()))
     }
 
     fn read_kind_file(filename: &str) -> String {
         let p = samples_dir().join("kind").join(filename);
-        read_to_string(&p).expect(&format!("unable to open '{}'", p.display()))
+        read_to_string(&p).unwrap_or_else(|_| panic!("unable to open '{}'", p.display()))
     }
 
     // These tests assert that the sample configuration files can be deserialized into the agent
@@ -644,10 +644,10 @@ mod test {
             .replace("\\${${CLUSTER_NAME}-instances.ids}", r#"["a", "b", "c"]"#)
             .replace("\\${${CLUSTER_NAME}.publicSubnetIds}", r#"["a", "b", "c"]"#)
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let cluster_resource: Resource = serde_yaml::from_str(yaml).unwrap();
         let _: EcsClusterConfig = serde_json::from_value(JsonValue::Object(
             cluster_resource.spec.agent.configuration.unwrap(),
@@ -702,10 +702,10 @@ mod test {
         let s = s
             .replace("\\${${CLUSTER_NAME}.publicSubnetIds}", r#"["a", "b", "c"]"#)
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let cluster_resource: Resource = serde_yaml::from_str(yaml).unwrap();
         let _: EcsClusterConfig = serde_json::from_value(JsonValue::Object(
             cluster_resource.spec.agent.configuration.unwrap(),
@@ -735,10 +735,10 @@ mod test {
             .replace("${GPU}", "true")
             .replace("${INSTANCE_TYPES}", r#"["a", "b", "c"]"#)
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let cluster_resource: Resource = serde_yaml::from_str(yaml).unwrap();
         let _: EcsClusterConfig = serde_json::from_value(JsonValue::Object(
             cluster_resource.spec.agent.configuration.unwrap(),
@@ -769,10 +769,10 @@ mod test {
             .replace("\\${${CLUSTER_NAME}.securityGroups}", r#"["a", "b", "c"]"#)
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -831,10 +831,10 @@ mod test {
             .replace("${SONOBUOY_MODE}", "quick")
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -866,10 +866,10 @@ mod test {
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${INSTANCE_TYPES}", r#"["a", "b", "c"]"#)
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: WorkloadConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -900,11 +900,11 @@ mod test {
             .replace("\\${${CLUSTER_NAME}.securityGroups}", r#"["a", "b", "c"]"#)
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${", "<")
-            .replace("}", ">")
-            .replace("\\", "");
+            .replace('}', ">")
+            .replace('\\', "");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -964,11 +964,11 @@ mod test {
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${SONOBUOY_MODE}", "quick")
             .replace("${", "<")
-            .replace("}", ">")
-            .replace("\\", "");
+            .replace('}', ">")
+            .replace('\\', "");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -996,11 +996,11 @@ mod test {
         let s = s
             .replace("${SONOBUOY_MODE}", "quick")
             .replace("${", "<")
-            .replace("}", ">")
-            .replace("\\", "");
+            .replace('}', ">")
+            .replace('\\', "");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -1021,10 +1021,10 @@ mod test {
         let s = s
             .replace("\\${${CLUSTER_NAME}.publicSubnetIds}", r#"["a", "b", "c"]"#)
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: EcsTestConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -1054,10 +1054,10 @@ mod test {
             .replace("${GPU}", "true")
             .replace("${INSTANCE_TYPES}", r#"["a", "b", "c"]"#)
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: EcsWorkloadTestConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -1088,10 +1088,10 @@ mod test {
             .replace("${SONOBUOY_MODE}", "quick")
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${", "<")
-            .replace("}", ">");
+            .replace('}', ">");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),
@@ -1126,11 +1126,11 @@ mod test {
             .replace("${K8S_VERSION}", "v1.24")
             .replace("${SONOBUOY_MODE}", "quick")
             .replace("${", "<")
-            .replace("}", ">")
-            .replace("\\", "");
+            .replace('}', ">")
+            .replace('\\', "");
 
         let docs: Vec<&str> = s.split("---").collect();
-        let &yaml = docs.get(0).unwrap();
+        let &yaml = docs.first().unwrap();
         let test_1_initial: Test = serde_yaml::from_str(yaml).unwrap();
         let _: SonobuoyConfig = serde_json::from_value(JsonValue::Object(
             test_1_initial.spec.agent.configuration.unwrap(),

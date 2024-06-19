@@ -1,6 +1,5 @@
 use snafu::Snafu;
 use std::fmt::{Debug, Display, Formatter};
-use std::time::Duration;
 
 /// The `Error` type for the `TestAgent`. Errors originating from the `Client` or the `Runner` are
 /// passed through, preserving their type. Errors originating with the `Agent` are of the
@@ -51,13 +50,6 @@ pub struct AgentError(InnerError);
 #[derive(Debug, Snafu)]
 #[snafu(visibility(pub(crate)))]
 pub(crate) enum InnerError {
-    #[snafu(display("Timeout waiting more than {:?} for {}: {}", duration, op, source))]
-    Timeout {
-        duration: Duration,
-        op: String,
-        source: tokio::time::error::Elapsed,
-    },
-
     #[snafu(display("An error occurred while creating archive: {}", source))]
     Archive { source: std::io::Error },
 

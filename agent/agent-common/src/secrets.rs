@@ -182,9 +182,9 @@ fn test() {
     let secret_name = SecretName::new("poet").unwrap();
     let secret_dir = dir.join(secret_name.as_str());
     fs::create_dir_all(&secret_dir).unwrap();
-    fs::write(secret_dir.join(key1), &value1).unwrap();
-    fs::write(secret_dir.join(key2), &value2).unwrap();
-    let secrets = SecretsReader::new_custom_directory(&dir);
+    fs::write(secret_dir.join(key1), value1).unwrap();
+    fs::write(secret_dir.join(key2), value2).unwrap();
+    let secrets = SecretsReader::new_custom_directory(dir);
     let data = secrets.get_secret(&secret_name).unwrap();
     assert_eq!(
         String::from_utf8(data.get(key1).unwrap().to_owned()).unwrap(),

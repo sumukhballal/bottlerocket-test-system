@@ -16,9 +16,6 @@ pub struct BootstrapError(InnerError);
 /// The private error type for the default [`Bootstrap`].
 #[derive(Debug, Snafu)]
 pub(crate) enum InnerError {
-    #[snafu(display("Unable to parse '{}' as an action", bad_value))]
-    BadAction { bad_value: String },
-
     #[snafu(display("Unable to read environment variable: '{}': {}", key, source))]
     EnvRead {
         key: String,

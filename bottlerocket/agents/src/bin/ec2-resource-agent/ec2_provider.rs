@@ -118,9 +118,10 @@ impl Create for Ec2Creator {
             .context(Resources::Clear, "Error sending cluster creation message")?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
         memo.cluster_type = spec.configuration.cluster_type.clone();
-        memo.cluster_name = spec.configuration.cluster_name.clone();
+        memo.cluster_name
+            .clone_from(&spec.configuration.cluster_name);
 
         info!("Creating AWS config");
         memo.current_status = "Creating AWS config".to_string();
@@ -194,8 +195,8 @@ impl Create for Ec2Creator {
         info!("Instance(s) created");
         // We are done, set our custom status to say so.
         memo.current_status = "Instance(s) created".into();
-        memo.region = spec.configuration.region.clone();
-        memo.instance_ids = instance_ids.clone();
+        memo.region.clone_from(&spec.configuration.region);
+        memo.instance_ids.clone_from(&instance_ids);
         client
             .send_info(memo.clone())
             .await
@@ -349,7 +350,7 @@ async fn instance_type(
         .context(memo, "Unable to get ami architecture")?
         .images
         .context(memo, "Unable to get ami architecture")?
-        .get(0)
+        .first()
         .context(memo, "Unable to get ami architecture")?
         .architecture
         .clone()

@@ -122,7 +122,7 @@ impl Create for MetalK8sClusterCreator {
             .context(resources, "Error sending cluster creation message")?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
 
         let shared_config = aws_config(
             &spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME),
@@ -336,7 +336,7 @@ impl Create for MetalK8sClusterCreator {
             create_ssm_activation(&cluster_name, machine_ips.len() as i32, &ssm_client)
                 .await
                 .context(resources, "Unable to create SSM activation")?;
-        memo.ssm_activation_id = activation.0.to_owned();
+        activation.0.clone_into(&mut memo.ssm_activation_id);
         let control_host_ctr_userdata = json!({"ssm":{"activation-id": activation.0.to_string(), "activation-code":activation.1.to_string(),"region":"us-west-2"}});
         debug!(
             "Control container host container userdata: {}",
@@ -464,7 +464,7 @@ impl Create for MetalK8sClusterCreator {
 
         // We are done, set our custom status to say so.
         memo.current_status = "Cluster created".into();
-        memo.instance_ids = instance_ids.clone();
+        memo.instance_ids.clone_from(&instance_ids);
 
         client
             .send_info(memo.clone())

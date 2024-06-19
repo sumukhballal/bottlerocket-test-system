@@ -31,7 +31,7 @@ pub trait CrdExt: Serialize {
                     .map(|s| s.to_owned())
                     .collect::<HashSet<String>>()
             })
-            .unwrap_or_else(HashSet::new)
+            .unwrap_or_default()
     }
 
     /// Does the object have one or more finalizers.

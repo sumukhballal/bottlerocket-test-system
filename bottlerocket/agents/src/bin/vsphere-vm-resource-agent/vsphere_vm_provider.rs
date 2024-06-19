@@ -117,7 +117,7 @@ impl Create for VMCreator {
         let (metadata_url, targets_url) = tuf_repo_urls(&spec.configuration.tuf_repo, &resources)?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
 
         let shared_config = aws_config(
             &spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME),
@@ -350,14 +350,14 @@ impl Create for VMCreator {
                 ),
             ));
         }
-        memo.vm_template = vm_template_name.to_owned();
+        vm_template_name.clone_into(&mut memo.vm_template);
 
         let vm_count = spec.configuration.vm_count.unwrap_or(DEFAULT_VM_COUNT);
         // Generate SSM activation codes and IDs
         let activation = create_ssm_activation(&vsphere_cluster.name, vm_count, &ssm_client)
             .await
             .context(resources, "Unable to create SSM activation")?;
-        memo.ssm_activation_id = activation.0.to_owned();
+        activation.0.clone_into(&mut memo.ssm_activation_id);
         let control_host_ctr_userdata = json!({"ssm":{"activation-id": activation.0.to_string(), "activation-code":activation.1.to_string(),"region":"us-west-2"}});
         debug!(
             "Control container host container userdata: {}",

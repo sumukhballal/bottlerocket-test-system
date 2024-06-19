@@ -324,7 +324,7 @@ impl Create for EksCreator {
             .context(Resources::Clear, "Error sending cluster creation message")?;
 
         memo.aws_secret_name = spec.secrets.get(AWS_CREDENTIALS_SECRET_NAME).cloned();
-        memo.assume_role = spec.configuration.assume_role.clone();
+        memo.assume_role.clone_from(&spec.configuration.assume_role);
 
         info!("Creating AWS config");
         memo.current_status = "Creating AWS config".to_string();
@@ -648,7 +648,7 @@ async fn eks_subnet_ids(cluster: &Cluster) -> ProviderResult<Vec<String>> {
             Resources::Remaining,
             "resources_vpc_config missing subnet ids",
         )
-        .map(|ids| ids.clone())
+        .cloned()
 }
 
 async fn cluster_sg(cluster: &Cluster) -> ProviderResult<String> {
@@ -672,7 +672,7 @@ async fn endpoint(cluster: &Cluster) -> ProviderResult<String> {
         .endpoint
         .as_ref()
         .context(Resources::Remaining, "Cluster missing endpoint field")
-        .map(|ids| ids.clone())
+        .cloned()
 }
 
 async fn certificate(cluster: &Cluster) -> ProviderResult<String> {
@@ -686,7 +686,7 @@ async fn certificate(cluster: &Cluster) -> ProviderResult<String> {
         .data
         .as_ref()
         .context(Resources::Remaining, "Certificate authority missing data")
-        .map(|ids| ids.clone())
+        .cloned()
 }
 
 async fn cluster_dns_ip(cluster: &Cluster) -> ProviderResult<String> {
