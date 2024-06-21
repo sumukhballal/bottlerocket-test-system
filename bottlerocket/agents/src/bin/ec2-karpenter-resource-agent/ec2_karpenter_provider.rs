@@ -529,6 +529,9 @@ spec:
         - key: kubernetes.io/arch
           operator: In
           values: ["arm64", "amd64"]
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ['on-demand']
 {}
 ---
 apiVersion: karpenter.k8s.aws/v1beta1
