@@ -14,11 +14,9 @@ FROM base as build-go
 
 ARG GOARCH
 ARG GOOS=linux
-ARG GOROOT="/usr/libexec/go"
 ARG GOPROXY
 
 USER builder
-ENV PATH="${GOROOT}/bin:${PATH}"
 ENV GOPROXY="${GOPROXY}"
 
 # =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^=

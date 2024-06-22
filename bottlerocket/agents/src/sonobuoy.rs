@@ -596,7 +596,7 @@ mod test_sonobuoy {
         assert_eq!(result.num_failed, 1);
         assert_eq!(result.num_skipped, 0);
         assert_eq!(result.outcome, Outcome::Timeout);
-        assert_eq!(result.other_info.unwrap(), "e2e: {\"name\":\"e2e\",\"node\":\"global\",\"timestamp\":\"2022-12-08T15:37:23.007805243Z\",\"msg\":\"Test Suite completed\",\"total\":1,\"completed\":1}");
+        assert_eq!(result.other_info.unwrap(), "e2e: {\"completed\":1,\"msg\":\"Test Suite completed\",\"name\":\"e2e\",\"node\":\"global\",\"timestamp\":\"2022-12-08T15:37:23.007805243Z\",\"total\":1}");
     }
 
     #[test]

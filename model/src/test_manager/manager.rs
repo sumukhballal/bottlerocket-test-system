@@ -6,12 +6,11 @@ use crate::clients::{AllowNotFound, CrdClient, ResourceClient, TestClient};
 use crate::constants::TESTSYS_RESULTS_FILE;
 use crate::system::AgentType;
 use crate::{Crd, CrdName, Resource, SecretName, TaskState, Test, TestUserState};
-use bytes::Bytes;
-use futures::{Stream, StreamExt};
+use futures::{AsyncBufRead, Stream, StreamExt};
 use k8s_openapi::api::core::v1::{Pod, Secret};
 use kube::api::{ListParams, LogParams};
 use kube::config::{KubeConfigOptions, Kubeconfig};
-use kube::{Api, Client, Config, Error, ResourceExt};
+use kube::{Api, Client, Config, ResourceExt};
 use serde::Deserialize;
 use snafu::{OptionExt, ResultExt};
 use std::{collections::BTreeMap, path::Path};
@@ -307,7 +306,7 @@ impl TestManager {
         &self,
         test_name: S,
         follow: bool,
-    ) -> Result<impl Stream<Item = Result<Bytes>>>
+    ) -> Result<impl futures::AsyncBufRead>
     where
         S: Into<String>,
     {
@@ -324,13 +323,6 @@ impl TestManager {
             .context(error::KubeSnafu {
                 action: "stream logs",
             })
-            .map(|stream| {
-                stream.map(|res| {
-                    res.context(error::KubeSnafu {
-                        action: "stream logs",
-                    })
-                })
-            })
     }
 
     /// Retrieve the logs of a resource.
@@ -339,7 +331,7 @@ impl TestManager {
         resource_name: S,
         state: ResourceState,
         follow: bool,
-    ) -> Result<impl Stream<Item = Result<Bytes>>>
+    ) -> Result<impl futures::AsyncBufRead>
     where
         S: Into<String>,
     {
@@ -356,20 +348,9 @@ impl TestManager {
             .context(error::KubeSnafu {
                 action: "stream logs",
             })
-            .map(|stream| {
-                stream.map(|res| {
-                    res.context(error::KubeSnafu {
-                        action: "stream logs",
-                    })
-                })
-            })
     }
 
-    /// Retrieve the logs of the controller.
-    pub async fn controller_logs(
-        &self,
-        follow: bool,
-    ) -> Result<impl Stream<Item = core::result::Result<Bytes, Error>>> {
+    pub async fn controller_logs(&self, follow: bool) -> Result<impl AsyncBufRead> {
         let pod_api: Api<Pod> = self.namespaced_api();
         let pod = self.controller_pod().await?;
         let log_params = LogParams {

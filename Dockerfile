@@ -19,10 +19,8 @@ USER builder
 
 ARG GOARCH
 ARG GOOS=linux
-ARG GOROOT="/usr/libexec/go"
 ARG GOPROXY
 
-ENV PATH="${GOROOT}/bin:${PATH}"
 ENV GOPROXY="${GOPROXY}"
 
 # =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^= =^..^=

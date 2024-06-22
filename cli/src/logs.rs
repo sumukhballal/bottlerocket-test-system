@@ -1,6 +1,6 @@
 use anyhow::{Context, Error, Result};
 use clap::Parser;
-use futures::StreamExt;
+use futures::{AsyncBufReadExt, TryStreamExt};
 use testsys_model::test_manager::{ResourceState, TestManager};
 
 /// Restart an object from a testsys cluster.
@@ -35,21 +35,21 @@ impl Logs {
     pub(crate) async fn run(self, client: TestManager) -> Result<()> {
         match (self.test, self.resource, self.resource_state, self.controller) {
             (Some(test), None, None, false ) => {
-                let mut logs = client.test_logs(test, self.follow).await.context("Unable to get logs.")?;
-                while let Some(line) = logs.next().await {
-                    print!("{}", String::from_utf8_lossy(&line.context("Unable to read line")?));
+                let mut logs = client.test_logs(test, self.follow).await.context("Unable to get logs.")?.lines();
+                while let Some(line) = logs.try_next().await? {
+                    print!("{}", line);
                 }
             }
             (None, Some(resource), Some(state), false) => {
-                let mut logs = client.resource_logs(resource, state, self.follow).await.context("Unable to get logs.")?;
-                while let Some(line) = logs.next().await {
-                    print!("{}", String::from_utf8_lossy(&line.context("Unable to read line")?));
+                let mut logs = client.resource_logs(resource, state, self.follow).await.context("Unable to get logs.")?.lines();
+                while let Some(line) = logs.try_next().await? {
+                    print!("{}", line);
                 }
             }
             (None, None, None, true) => {
-                let mut logs = client.controller_logs(self.follow).await.context("Unable to get logs.")?;
-                while let Some(line) = logs.next().await {
-                    print!("{}", String::from_utf8_lossy(&line.context("Unable to read line")?));
+                let mut logs = client.controller_logs(self.follow).await.context("Unable to get logs.")?.lines();
+                while let Some(line) = logs.try_next().await?  {
+                    print!("{}", line);
                 }
             }
             _ => return Err(Error::msg("Invalid arguments were provided. Exactly one of `--test`, `--resource`, and `--controller` must be used.")),
